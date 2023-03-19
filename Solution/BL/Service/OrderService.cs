@@ -8,83 +8,66 @@ namespace Solution.BL.Service;
 
 public class OrderService : IOrderService
 {
-    private readonly IOrderRepository _repository;
+    private readonly IOrderRepository orderRepository;
 
-    public OrderService(IOrderRepository repository)
+    public OrderService(IOrderRepository orderRepository)
     {
-        _repository = repository;
+        this.orderRepository = orderRepository;
     }
 
     public async Task<IEnumerable<Order>> GetAllOrders()
     {
-        var orders = await _repository.GetAllOrder();
-        return orders.Select(o => new Order
-        {
-            Id = o.Id,
-            Date = o.Date,
-            Number = o.Number,
-            ProviderId = o.ProviderId
-        });
+        return await orderRepository.GetAllOrder();
     }
 
     public async Task<Order> GetOrderById(int id)
     {
-        var order = await _repository.GetOrderById(id);
-        if (order != null)
+        var order = await orderRepository.GetOrderById(id);
+        if (order == null)
         {
-            return new Order
-            {
-                Id = order.Id,
-                Number = order.Number,
-                Date = order.Date,
-                ProviderId = order.ProviderId
-            };
+            throw new Exception($"Order with id {id} not found");
         }
 
-        return null;
+        return order;
     }
 
     public async Task<Order> CreateOrder(Order order)
     {
-        var newOrder = new Order
-        {
-            Number = order.Number,
-            Date = order.Date,
-            ProviderId = order.ProviderId
-        };
-        await _repository.CreateOrder(order);
+        // Validations (if any)
+
+        await orderRepository.CreateOrder(order);
+
         return order;
     }
 
-    public async Task<bool> UpdateOrder(Order order)
+    public async Task<bool> UpdateOrder(Order updatedOrder)
     {
-        var existingOrder = await _repository.GetOrderById(order.Id);
+        var existingOrder = await orderRepository.GetOrderById(updatedOrder.Id);
 
         if (existingOrder == null)
         {
-            return false;
+            throw new ArgumentException($"Order with id {updatedOrder.Id} not found");
         }
 
-        existingOrder.Number = order.Number;
-        existingOrder.ProviderId = order.ProviderId;
+        existingOrder.Number = updatedOrder.Number;
+        existingOrder.Date = updatedOrder.Date;
+        existingOrder.ProviderId = updatedOrder.ProviderId;
 
-        await _repository.UpdateOrder(existingOrder);
+        await orderRepository.UpdateOrder(existingOrder);
 
         return true;
     }
 
     public async Task<bool> DeleteOrder(int id)
     {
-        var existingOrder = await _repository.GetOrderById(id);
+        var order = await orderRepository.GetOrderById(id);
 
-        if (existingOrder == null)
+        if (order == null)
         {
-            return false;
+            throw new ArgumentException($"Order with ID {id} was not found.");
         }
 
-
-        await _repository.DeleteOrder(id);
-
+        await orderRepository.DeleteOrder(id);
         return true;
     }
 }

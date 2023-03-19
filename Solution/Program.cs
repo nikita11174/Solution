@@ -2,10 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using Solution.BL.Interfaces;
 using Solution.BL.Service;
 using Solution.DAL;
+using Solution.DAL.IRepository;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 
 builder.Services.AddMvc().AddSessionStateTempDataProvider();
