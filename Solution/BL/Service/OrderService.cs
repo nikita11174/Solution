@@ -40,7 +40,7 @@ public class OrderService : IOrderService
         return order;
     }
 
-    public async Task<bool> UpdateOrder(Order updatedOrder)
+    public async Task<Order> UpdateOrder(Order updatedOrder)
     {
         var existingOrder = await orderRepository.GetOrderById(updatedOrder.Id);
 
@@ -55,7 +55,7 @@ public class OrderService : IOrderService
 
         await orderRepository.UpdateOrder(existingOrder);
 
-        return true;
+        return existingOrder;
     }
 
     public async Task<bool> DeleteOrder(int id)

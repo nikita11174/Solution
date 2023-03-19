@@ -79,16 +79,16 @@ public class OrderController : ControllerBase
 
         order.Number = order.Number;
         order.Date = order.Date;
-        order.ProviderId = updateOrder.Pro;
+        order.ProviderId = order.ProviderId;
 
         var updatedOrder = await _orderService.UpdateOrder(order);
 
         var orderDto = new Order
         {
             Id = updatedOrder.Id,
-            CustomerName = updatedOrder.CustomerName,
-            OrderDate = updatedOrder.OrderDate,
-            TotalAmount = updatedOrder.TotalAmount
+            Number = updatedOrder.Number,
+            Date = updatedOrder.Date,
+            ProviderId = updatedOrder.ProviderId
         };
 
         return Ok(orderDto);
