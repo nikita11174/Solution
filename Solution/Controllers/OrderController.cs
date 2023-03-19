@@ -104,7 +104,7 @@ public class OrderController : ControllerBase
             return NotFound();
         }
 
-        await _orderService.DeleteOrder(order);
+        await _orderService.DeleteOrder(order.Id);
 
         return NoContent();
     }
